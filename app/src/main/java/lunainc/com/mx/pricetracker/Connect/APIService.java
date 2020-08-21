@@ -8,7 +8,7 @@ import retrofit2.http.Path;
 public interface APIService {
 
 
-    @GET("/items/{id}?include_attributes=price")
+    @GET("/items/{id}")
     Call<ProductML> getDataProductML(@Path("id") String id);
 
 }

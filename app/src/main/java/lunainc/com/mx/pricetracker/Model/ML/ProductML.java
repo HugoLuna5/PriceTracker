@@ -52,6 +52,14 @@ public class ProductML implements Serializable {
     @Expose
     private String currency_id;
 
+    @SerializedName("thumbnail")
+    @Expose
+    private String thumbnail;
+
+    @SerializedName("secure_thumbnail")
+    @Expose
+    private String secure_thumbnail;
+
     @SerializedName("pictures")
     @Expose
     private ArrayList<Picture> pictures;
@@ -60,7 +68,7 @@ public class ProductML implements Serializable {
     public ProductML() {
     }
 
-    public ProductML(String id, String site_id, String title, String subtitle, String seller_id, String category_id, String official_store_id, Long price, Long base_price, Long original_price, String currency_id, ArrayList<Picture> pictures) {
+    public ProductML(String id, String site_id, String title, String subtitle, String seller_id, String category_id, String official_store_id, Long price, Long base_price, Long original_price, String currency_id, String thumbnail, String secure_thumbnail, ArrayList<Picture> pictures) {
         this.id = id;
         this.site_id = site_id;
         this.title = title;
@@ -72,6 +80,8 @@ public class ProductML implements Serializable {
         this.base_price = base_price;
         this.original_price = original_price;
         this.currency_id = currency_id;
+        this.thumbnail = thumbnail;
+        this.secure_thumbnail = secure_thumbnail;
         this.pictures = pictures;
     }
 
@@ -161,6 +171,22 @@ public class ProductML implements Serializable {
 
     public void setCurrency_id(String currency_id) {
         this.currency_id = currency_id;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
+    }
+
+    public String getSecure_thumbnail() {
+        return secure_thumbnail;
+    }
+
+    public void setSecure_thumbnail(String secure_thumbnail) {
+        this.secure_thumbnail = secure_thumbnail;
     }
 
     public ArrayList<Picture> getPictures() {

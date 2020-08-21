@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">PriceTracker</string>
+    <string name="nameProduct">Nombre del producto</string>
+    <string name="prodcut_id">Id del producto</string>
+    <string name="actual_price">Precio actual</string>
+    <string name="product_url">Url del producto</string>
+    <string name="add_product">Agregar producto</string>
 </resources>
