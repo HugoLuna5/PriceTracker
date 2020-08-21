@@ -3,7 +3,9 @@ package lunainc.com.mx.pricetracker.Model.ML;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Picture {
+import java.io.Serializable;
+
+public class Picture implements Serializable {
 
     @SerializedName("id")
     @Expose

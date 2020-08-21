@@ -1,6 +1,8 @@
 package lunainc.com.mx.pricetracker.Model;
 
-public class Price {
+import java.io.Serializable;
+
+public class Price implements Serializable {
 
 
     private int id;
