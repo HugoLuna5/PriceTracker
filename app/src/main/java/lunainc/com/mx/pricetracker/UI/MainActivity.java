@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
 
 
     public void periodicWork() {
-        PeriodicWorkRequest mRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 6, TimeUnit.HOURS)
+        PeriodicWorkRequest mRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 1, TimeUnit.HOURS)
                 .setConstraints(Constraints.NONE)
                 .build();
 
