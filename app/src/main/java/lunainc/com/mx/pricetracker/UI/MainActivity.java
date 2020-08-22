@@ -7,6 +7,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.work.Constraints;
+import androidx.work.PeriodicWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,6 +19,7 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -22,6 +27,7 @@ import lunainc.com.mx.pricetracker.Adapter.ProductsAdapter;
 import lunainc.com.mx.pricetracker.Model.Product;
 import lunainc.com.mx.pricetracker.R;
 import lunainc.com.mx.pricetracker.Utils.DBHelper;
+import lunainc.com.mx.pricetracker.Utils.MyWorker;
 
 public class MainActivity extends AppCompatActivity implements ProductsAdapter.ItemClickListener, ProductsAdapter.ItemLongClickListener {
 
@@ -42,7 +48,8 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
     private DBHelper db;
     private ArrayList<Product> arrayList;
     private ProductsAdapter productsAdapter;
-    
+    private WorkManager mWorkManager;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -61,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         arrayList = loadData();
-
+        mWorkManager = WorkManager.getInstance();
         productsAdapter = new ProductsAdapter(this, arrayList);
         productsAdapter.notifyDataSetChanged();
         productsAdapter.setClickListener(this);
@@ -74,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
     protected void onStart() {
         super.onStart();
         events();
-
+        periodicWork();
     }
 
     private ArrayList<Product> loadData() {
@@ -140,4 +147,21 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
     public void onItemLongClick(View view, int position) {
         deleteProduct(position);
     }
+
+
+    public void periodicWork() {
+        PeriodicWorkRequest mRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 6, TimeUnit.HOURS)
+                .setConstraints(Constraints.NONE)
+                .build();
+
+        mWorkManager.getWorkInfoByIdLiveData(mRequest.getId()).observe(this, workInfo -> {
+            if (workInfo != null) {
+                WorkInfo.State state = workInfo.getState();
+
+
+            }
+        });
+        mWorkManager.enqueue(mRequest);
+    }
+
 }
