@@ -60,6 +60,10 @@ public class ProductML implements Serializable {
     @Expose
     private String secure_thumbnail;
 
+    @SerializedName("status")
+    @Expose
+    private String status;
+
     @SerializedName("pictures")
     @Expose
     private ArrayList<Picture> pictures;
@@ -68,7 +72,7 @@ public class ProductML implements Serializable {
     public ProductML() {
     }
 
-    public ProductML(String id, String site_id, String title, String subtitle, String seller_id, String category_id, String official_store_id, Long price, Long base_price, Long original_price, String currency_id, String thumbnail, String secure_thumbnail, ArrayList<Picture> pictures) {
+    public ProductML(String id, String site_id, String title, String subtitle, String seller_id, String category_id, String official_store_id, Long price, Long base_price, Long original_price, String currency_id, String thumbnail, String secure_thumbnail, String status, ArrayList<Picture> pictures) {
         this.id = id;
         this.site_id = site_id;
         this.title = title;
@@ -82,6 +86,7 @@ public class ProductML implements Serializable {
         this.currency_id = currency_id;
         this.thumbnail = thumbnail;
         this.secure_thumbnail = secure_thumbnail;
+        this.status = status;
         this.pictures = pictures;
     }
 
@@ -187,6 +192,14 @@ public class ProductML implements Serializable {
 
     public void setSecure_thumbnail(String secure_thumbnail) {
         this.secure_thumbnail = secure_thumbnail;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public ArrayList<Picture> getPictures() {

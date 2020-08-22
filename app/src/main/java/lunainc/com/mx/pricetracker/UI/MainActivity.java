@@ -11,6 +11,7 @@ import androidx.work.WorkManager;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -25,7 +26,7 @@ import lunainc.com.mx.pricetracker.R;
 import lunainc.com.mx.pricetracker.Utils.DBHelper;
 import lunainc.com.mx.pricetracker.Utils.MyWorker;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ProductsAdapter.ItemClickListener {
 
     public static final String MESSAGE_STATUS = "message_status";
     private WorkManager mWorkManager;
@@ -66,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         productsAdapter = new ProductsAdapter(this, arrayList);
         productsAdapter.notifyDataSetChanged();
+        productsAdapter.setClickListener(this);
         //productsAdapter.setLongClickListener(this);
         recyclerView.setAdapter(productsAdapter);
     }
@@ -100,11 +102,18 @@ public class MainActivity extends AppCompatActivity {
         mWorkManager.getWorkInfoByIdLiveData(mRequest.getId()).observe(this, workInfo -> {
             if (workInfo != null) {
                 WorkInfo.State state = workInfo.getState();
-                // Toast.makeText(mContext, state.toString() + "\n", Toast.LENGTH_SHORT).show();
 
             }
         });
         mWorkManager.enqueue(mRequest);
     }
 
+    @Override
+    public void onItemClick(View view, int position) {
+        Product product = arrayList.get(position);
+        Intent intent = new Intent(this, ShowProductActivity.class);
+        intent.putExtra("product", product);
+        startActivity(intent);
+        finish();
+    }
 }

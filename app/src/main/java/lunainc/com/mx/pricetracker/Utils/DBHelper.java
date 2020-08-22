@@ -22,6 +22,7 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String PRODUCT_COLUMN_PRICE = "price";
     private static final String PRODUCT_COLUMN_URL = "url";
     private static final String PRODUCT_COLUMN_DIST = "dist";
+    private static final String PRODUCT_COLUMN_STATUS = "status";
     private static final String PRODUCT_COLUMN_CREATED_AT = "created_at";
 
     private static final String PRICE_TABLE_NAME = "price";
@@ -46,6 +47,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         PRODUCT_COLUMN_PRICE+" text," +
                         PRODUCT_COLUMN_URL+" text," +
                         PRODUCT_COLUMN_DIST+" text," +
+                        PRODUCT_COLUMN_STATUS+" text," +
                         PRODUCT_COLUMN_CREATED_AT+" DATETIME DEFAULT CURRENT_TIMESTAMP)"
         );
 
@@ -53,13 +55,13 @@ public class DBHelper extends SQLiteOpenHelper {
                 "CREATE TABLE " + PRICE_TABLE_NAME +
                         "("+PRICE_COLUMN_ID+"  integer primary key autoincrement," +
                         PRICE_COLUMN_PRODUCT_ID+" integer," +
-                        PRICE_COLUMN_PRICE+"name text," +
+                        PRICE_COLUMN_PRICE+" text," +
                         PRICE_COLUMN_CHECKED+" DATETIME DEFAULT CURRENT_TIMESTAMP)"
         );
     }
 
 
-    public boolean createProduct(String id_product, String name, String price, String url , String dist){
+    public boolean createProduct(String id_product, String name, String price, String url , String dist, String status){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PRODUCT_COLUMN_IDPRODUCT, id_product);
@@ -67,11 +69,12 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(PRODUCT_COLUMN_PRICE, price);
         contentValues.put(PRODUCT_COLUMN_URL, url);
         contentValues.put(PRODUCT_COLUMN_DIST, dist);
+        contentValues.put(PRODUCT_COLUMN_STATUS, status);
         long rowInserted = db.insert(PRODUCT_TABLE_NAME, null, contentValues);
         return rowInserted != -1;
     }
 
-    public boolean createPrice(String product_id, String price){
+    public boolean createPrice(int product_id, String price){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(PRICE_COLUMN_PRODUCT_ID, product_id);
@@ -106,12 +109,22 @@ public class DBHelper extends SQLiteOpenHelper {
         return productArrayList;
     }
 
-    public ArrayList<Price> getPrices(){
+    public Integer updateProduct(String attr, String value, String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(attr, value);
+        return db.update(PRODUCT_TABLE_NAME, contentValues, "id = ?", new String[]{id});
+    }
+
+
+
+
+    public ArrayList<Price> getPrices(int id){
         ArrayList<Price> priceArrayList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         @SuppressLint("Recycle")
-        Cursor res = db.rawQuery("SELECT * FROM "+PRODUCT_TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM "+PRICE_TABLE_NAME+" WHERE "+PRICE_COLUMN_PRODUCT_ID+" = ?", new String[]{String.valueOf(id)});
         res.moveToFirst();
 
         while (!res.isAfterLast()){

@@ -69,7 +69,7 @@ public class CreateProductActivity extends AppCompatActivity {
             String price = priceActual.getText().toString();
             String urlTx = url.getText().toString();
 
-            db.createProduct(id, name, price, urlTx, "ML");
+            db.createProduct(id, name, price, urlTx, "ML", "active");
             startActivity(new Intent(this, MainActivity.class));
             finish();
         });

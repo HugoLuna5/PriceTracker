@@ -63,7 +63,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         Product product = products.get(position);
         holder.name.setText(product.getName());
         holder.desc.setText(product.getUrl());
-        holder.cantidad.setText("Precio inicial: "+product.getPrice());
+        holder.cantidad.setText("Precio inicial: "+product.getPrice()+ " MXN");
 
 
         apiService.getDataProductML(product.getId_product()).enqueue(new Callback<ProductML>() {
