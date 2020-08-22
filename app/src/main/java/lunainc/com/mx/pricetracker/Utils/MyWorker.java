@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.icu.text.NumberFormat;
 import android.media.RingtoneManager;
 import android.util.Log;
 
@@ -65,7 +66,7 @@ public class MyWorker extends Worker {
 
                         String price = String.valueOf(response.body().getPrice());
 
-                        if (!product.getPrice().equals(price)){
+                        if (Integer.parseInt(product.getPrice().replaceAll(",", "")) != Integer.parseInt(price.replaceAll(",", ""))){
                             db.createPrice(product.getId(), price);
                             db.updateProduct("status", response.body().getStatus(), String.valueOf(product.getId()));
                             sendNotification(product.getName(), "Tu producto "+product.getName()+" ha cambiado de precio, su precio ahora es "+price);
