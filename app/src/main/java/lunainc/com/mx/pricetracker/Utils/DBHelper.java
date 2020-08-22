@@ -48,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         PRODUCT_COLUMN_URL+" text," +
                         PRODUCT_COLUMN_DIST+" text," +
                         PRODUCT_COLUMN_STATUS+" text," +
-                        PRODUCT_COLUMN_CREATED_AT+" DATETIME DEFAULT CURRENT_TIMESTAMP)"
+                        PRODUCT_COLUMN_CREATED_AT+" DATETIME DEFAULT (datetime('now','localtime')))"
         );
 
         db.execSQL(
@@ -56,7 +56,7 @@ public class DBHelper extends SQLiteOpenHelper {
                         "("+PRICE_COLUMN_ID+"  integer primary key autoincrement," +
                         PRICE_COLUMN_PRODUCT_ID+" integer," +
                         PRICE_COLUMN_PRICE+" text," +
-                        PRICE_COLUMN_CHECKED+" DATETIME DEFAULT CURRENT_TIMESTAMP)"
+                        PRICE_COLUMN_CHECKED+" DATETIME DEFAULT (datetime('now','localtime')))"
         );
     }
 
@@ -90,7 +90,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         @SuppressLint("Recycle")
-        Cursor res = db.rawQuery("SELECT * FROM "+PRODUCT_TABLE_NAME, null);
+        Cursor res = db.rawQuery("SELECT * FROM "+PRODUCT_TABLE_NAME+ " ORDER BY "+PRODUCT_COLUMN_ID+" DESC", null);
         res.moveToFirst();
 
         while (!res.isAfterLast()){
@@ -124,7 +124,7 @@ public class DBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         @SuppressLint("Recycle")
-        Cursor res = db.rawQuery("SELECT * FROM "+PRICE_TABLE_NAME+" WHERE "+PRICE_COLUMN_PRODUCT_ID+" = ?", new String[]{String.valueOf(id)});
+        Cursor res = db.rawQuery("SELECT * FROM "+PRICE_TABLE_NAME+" WHERE "+PRICE_COLUMN_PRODUCT_ID+" = ? ORDER BY "+PRICE_COLUMN_ID+" ASC", new String[]{String.valueOf(id)});
         res.moveToFirst();
 
         while (!res.isAfterLast()){
@@ -140,6 +140,11 @@ public class DBHelper extends SQLiteOpenHelper {
         return priceArrayList;
     }
 
+
+    public Integer deleteProduct(String id){
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(PRODUCT_TABLE_NAME, "id = ?", new String[]{id});
+    }
 
 
     @Override

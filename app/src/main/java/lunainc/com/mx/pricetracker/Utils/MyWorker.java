@@ -43,6 +43,7 @@ public class MyWorker extends Worker {
 
         arrayList = db.getProducts();
 
+        Log.e("Worker", "GG");
         for (int i = 0; i < arrayList.size() ; i++) {
             Product product = arrayList.get(i);
             mAPIService.getDataProductML(product.getId_product()).enqueue(new Callback<ProductML>() {

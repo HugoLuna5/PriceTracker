@@ -11,21 +11,40 @@
         android:id="@+id/toolbar"
         layout="@layout/toolbar"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:layout_below="@id/toolbar"
-        android:id="@+id/recylcerView"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/actionAdd"
-        style="@style/ButtonFloat"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:src="@drawable/ic_add"
-        android:layout_margin="25dp"
-        android:layout_width="60dp"
-        android:layout_height="60dp"/>
+
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:layout_below="@id/toolbar"
+
+        android:id="@+id/refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recylcerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/actionAdd"
+                style="@style/ButtonFloat"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_add"
+                android:layout_margin="25dp"
+                android:layout_width="60dp"
+                android:layout_height="60dp"/>
+        </RelativeLayout>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
 
 
 </RelativeLayout>

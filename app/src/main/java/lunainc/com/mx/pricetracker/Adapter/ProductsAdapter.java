@@ -12,10 +12,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-
 import java.util.List;
 
 import butterknife.BindView;
@@ -25,10 +21,10 @@ import lunainc.com.mx.pricetracker.Connect.ApiUtils;
 import lunainc.com.mx.pricetracker.Model.ML.ProductML;
 import lunainc.com.mx.pricetracker.Model.Product;
 import lunainc.com.mx.pricetracker.R;
+import lunainc.com.mx.pricetracker.Utils.DBHelper;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Path;
 
 public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.ProductViewHolder> {
 
@@ -38,6 +34,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
     private ItemClickListener mClickListener;
     private ItemLongClickListener mLongClickListener;
     private APIService apiService;
+    private DBHelper db;
 
 
     public ProductsAdapter(Context context, List<Product> products){
@@ -45,6 +42,7 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
         this.mInflater = LayoutInflater.from(context);
         this.products = products;
         apiService = ApiUtils.getAPIService();
+        db = new DBHelper(context);
 
     }
 
@@ -72,9 +70,8 @@ public class ProductsAdapter extends RecyclerView.Adapter<ProductsAdapter.Produc
 
                 if (response.isSuccessful()){
 
-                    String imageURL = response.body().getPictures().get(1).getUrl();
-                    //Picasso.get().load(imageURL).into(holder.image);
-                    Glide.with(context).load(imageURL).into(holder.image);
+                    db.updateProduct("status", response.body().getStatus(), String.valueOf(product.getId()));
+
 
 
                 }else {

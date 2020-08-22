@@ -1,13 +1,12 @@
 package lunainc.com.mx.pricetracker.UI;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.work.PeriodicWorkRequest;
-import androidx.work.WorkInfo;
-import androidx.work.WorkManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -16,7 +15,6 @@ import android.view.View;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,15 +22,16 @@ import lunainc.com.mx.pricetracker.Adapter.ProductsAdapter;
 import lunainc.com.mx.pricetracker.Model.Product;
 import lunainc.com.mx.pricetracker.R;
 import lunainc.com.mx.pricetracker.Utils.DBHelper;
-import lunainc.com.mx.pricetracker.Utils.MyWorker;
 
-public class MainActivity extends AppCompatActivity implements ProductsAdapter.ItemClickListener {
+public class MainActivity extends AppCompatActivity implements ProductsAdapter.ItemClickListener, ProductsAdapter.ItemLongClickListener {
 
     public static final String MESSAGE_STATUS = "message_status";
-    private WorkManager mWorkManager;
 
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+
+    @BindView(R.id.refresh)
+    SwipeRefreshLayout refresh;
     
     @BindView(R.id.recylcerView)
     RecyclerView recyclerView;
@@ -50,8 +49,6 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         configView();
-        mWorkManager = WorkManager.getInstance();
-        periodicWork();
     }
 
     private void configView() {
@@ -68,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
         productsAdapter = new ProductsAdapter(this, arrayList);
         productsAdapter.notifyDataSetChanged();
         productsAdapter.setClickListener(this);
-        //productsAdapter.setLongClickListener(this);
+        productsAdapter.setLongClickListener(this);
         recyclerView.setAdapter(productsAdapter);
     }
 
@@ -92,20 +89,42 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
             finish();
             
         });
+
+        refresh.setOnRefreshListener(() -> {
+            reloadData();
+            refresh.setRefreshing(false);
+        });
         
     }
 
-    public void periodicWork() {
-        PeriodicWorkRequest mRequest = new PeriodicWorkRequest.Builder(MyWorker.class, 6, TimeUnit.HOURS)
-                .build();
 
-        mWorkManager.getWorkInfoByIdLiveData(mRequest.getId()).observe(this, workInfo -> {
-            if (workInfo != null) {
-                WorkInfo.State state = workInfo.getState();
 
-            }
-        });
-        mWorkManager.enqueue(mRequest);
+
+    private void reloadData() {
+        arrayList = db.getProducts();
+        productsAdapter = new ProductsAdapter(this, arrayList);
+        productsAdapter.notifyDataSetChanged();
+        productsAdapter.setClickListener(this);
+        productsAdapter.setLongClickListener(this);
+        recyclerView.setAdapter(productsAdapter);
+
+    }
+
+    private void deleteProduct(int position) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("¿Realmente desea eliminar este producto?")
+                .setTitle("Eliminar producto")
+                .setPositiveButton("Aceptar", (dialog, id) -> {
+
+                    db.deleteProduct(String.valueOf(arrayList.get(position).getId()));
+                    reloadData();
+
+                })
+                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+        builder.create();
+        builder.show();
+
     }
 
     @Override
@@ -115,5 +134,10 @@ public class MainActivity extends AppCompatActivity implements ProductsAdapter.I
         intent.putExtra("product", product);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onItemLongClick(View view, int position) {
+        deleteProduct(position);
     }
 }
